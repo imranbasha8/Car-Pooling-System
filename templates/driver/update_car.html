@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h5>Update Car Details</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="car_name" class="form-label">Car Name</label>
+                            <input type="text" class="form-control" id="car_name" name="car_name" value="{{ car.car_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="company" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="company" name="company" value="{{ car.company }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="car_type" class="form-label">Car Type</label>
+                            <input type="text" class="form-control" id="car_type" name="car_type" value="{{ car.car_type }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="from_place" class="form-label">From</label>
+                            <input type="text" class="form-control" id="from_place" name="from_place" value="{{ car.from_place }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="to_place" class="form-label">To</label>
+                            <input type="text" class="form-control" id="to_place" name="to_place" value="{{ car.to_place }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ car.date|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time" class="form-label">Time</label>
+                            <input type="time" class="form-control" id="time" name="time" value="{{ car.time|time:'H:i' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_seats" class="form-label">Total Seats</label>
+                            <input type="number" class="form-control" id="total_seats" name="total_seats" value="{{ car.total_seats }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="available_seats" class="form-label">Available Seats</label>
+                            <input type="number" class="form-control" id="available_seats" name="available_seats" value="{{ car.available_seats }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price_per_seat" class="form-label">Price per Seat (₹)</label>
+                            <input type="number" step="0.01" class="form-control" id="price_per_seat" name="price_per_seat" value="{{ car.price_per_seat }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="car_img" class="form-label">Car Image</label>
+                            <input type="file" class="form-control" id="car_img" name="car_img">
+                            {% if car.car_img %}
+                                <small class="text-muted">Current image will be kept if no new image is uploaded</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Update Car</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

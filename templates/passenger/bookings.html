@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>My Bookings</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Car</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.car.car_name }}</td>
+                            <td>{{ booking.pickup|date:"d M Y" }}</td>
+                            <td>{{ booking.status }}</td>
+                            <td>₹{{ booking.total_price }}</td>
+                            <td>
+                                {% if booking.status == 'completed' and not booking.feedback %}
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#feedbackModal{{booking.id}}">
+                                        Add Feedback
+                                    </button>
+                                    
+                                    <!-- Feedback Modal -->
+                                    <div class="modal fade" id="feedbackModal{{booking.id}}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Rate your ride</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="POST" action="{% url 'add_feedback' booking.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Rating</label>
+                                                            <select name="rating" class="form-control" required>
+                                                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                                                <option value="4">⭐⭐⭐⭐ Good</option>
+                                                                <option value="3">⭐⭐⭐ Average</option>
+                                                                <option value="2">⭐⭐ Poor</option>
+                                                                <option value="1">⭐ Very Poor</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Feedback</label>
+                                                            <textarea name="feedback" class="form-control" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elif booking.feedback %}
+                                    <span class="text-success">Feedback submitted</span>
+                                {% elif booking.status != 'completed' and booking.status != 'cancelled' and booking.status != 'rejected' %}
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal{{booking.id}}">
+                                        Cancel Booking
+                                    </button>
+
+                                    <!-- Cancel Modal -->
+                                    <div class="modal fade" id="cancelModal{{booking.id}}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Cancel Booking</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to cancel this booking?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                                        <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

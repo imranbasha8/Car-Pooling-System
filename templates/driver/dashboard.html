@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Driver Dashboard</h2>
+    
+    <div class="row mt-4">
+        <!-- Quick Actions -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                    {% if pending_bookings %}
+                        <span class="badge bg-danger">{{ pending_bookings.count }} New Requests</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'addcar' %}" class="btn btn-success">Add New Car</a>
+                        <a href="{% url 'driver_bookings' %}" class="btn btn-outline-success">View Bookings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cars List -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">My Cars</h5>
+                </div>
+                <div class="card-body">
+                    {% if cars %}
+                        <div class="row">
+                            {% for car in cars %}
+                                {% if car.available_seats > 0 %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            {% if car.car_img %}
+                                                <img src="{{ car.imageURL }}" class="card-img-top" alt="{{ car.car_name }}">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ car.car_name }}</h5>
+                                                <p class="card-text">
+                                                    <small>Car Number: {{ car.car_num }}</small><br>
+                                                    From: {{ car.from_place }}<br>
+                                                    To: {{ car.to_place }}<br>
+                                                    Date: {{car.date}} <br>
+                                                    Time: {{car.time|time:"g:i A"}} <br>
+                                                    Price per Seat: ₹{{ car.price_per_seat }}<br>
+                                                    Total Seats: {{car.total_seats}}<br>
+                                                    Available Seats: {{car.available_seats}} <br>
+                                                </p>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{% url 'update_car' car.id %}" class="btn btn-primary btn-sm">Update Car</a>
+                                                    <form method="POST" action="{% url 'delete_car' car.id %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this car?')">Delete Car</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No cars added yet. <a href="{% url 'addcar' %}">Add your first car</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bookings -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Bookings</h5>
+        </div>
+        <div class="card-body">
+            {% if active_bookings %}
+                <h6>Active Rides</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Car</th>
+                                <th>Passenger</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in active_bookings %}
+                            <tr>
+                                <td>{{ booking.car.car_name }}</td>
+                                <td>{{ booking.name.fname }}</td>
+                                <td>{{ booking.pickup|date:"d M Y" }}</td>
+                                <td>{{ booking.status }}</td>
+                                <td>
+                                    {% if booking.status == 'accepted' %}
+                                        <form method="POST" action="{% url 'manage_booking' booking.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="complete">
+                                            <button class="btn btn-sm btn-success">Mark Completed</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

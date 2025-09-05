@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h5>Available Rides</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for ride in available_rides %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            {% if ride.car_img %}
+                                <img src="{{ ride.car_img.url }}" class="card-img-top" alt="{{ ride.car_name }}" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ ride.car_name }} ({{ ride.company }})</h5>
+                                <div class="car-details">
+                                    <p><strong>Car Number:</strong> {{ ride.car_num }}</p>
+                                    <p><strong>Type:</strong> {{ ride.car_type }}</p>
+                                    <p><strong>From:</strong> {{ ride.from_place }}</p>
+                                    <p><strong>To:</strong> {{ ride.to_place }}</p>
+                                    <p><strong>Date:</strong> {{ ride.date|date:"d M Y" }}</p>
+                                    <p><strong>Time:</strong> {{ ride.time|time:"g:i A" }}</p>
+                                    <p><strong>Available Seats:</strong> {{ ride.available_seats }}/{{ ride.total_seats }}</p>
+                                    <p><strong>Price per Seat:</strong> ₹{{ ride.price_per_seat }}</p>
+                                </div>
+                                <a href="{% url 'book_ride' ride.id %}" class="btn btn-primary w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p>No rides available at the moment.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

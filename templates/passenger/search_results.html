@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Available Rides</h3>
+    <div class="row">
+        {% for car in cars %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if car.car_img %}
+                    <img src="{{ car.car_img.url }}" class="card-img-top" alt="{{ car.car_name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.car_name }}</h5>
+                    <p class="card-text">
+                        <strong>From:</strong> {{ car.from_place }}<br>
+                        <strong>To:</strong> {{ car.to_place }}<br>
+                        <strong>Dates:</strong> {{ car.from_date|date }} - {{ car.to_date|date }}<br>
+                        <strong>Price:</strong> ₹{{ car.price }} per day<br>
+                        <strong>Driver:</strong> {{ car.cust.fname }}<br>
+                        <strong>Available Seats:</strong> {{ car.available_seats }}/{{ car.total_seats }}<br>
+                        <strong>Price per Seat:</strong> ₹{{ car.price_per_seat }}
+                    </p>
+                    <a href="{% url 'book_ride' car.id %}" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No rides available for the selected criteria. Try different dates or locations.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

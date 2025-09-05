@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Search Available Rides</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'passenger_search' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>From Location</label>
+                        <input type="text" name="from_place" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>To Location</label>
+                        <input type="text" name="to_place" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label> Date</label>
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Time</label>
+                        <input type="time" name="time" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Search Rides</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                {% if car.car_img %}
+                    <img src="{{ car.car_img.url }}" class="card-img-top" alt="{{ car.car_name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h3>{{ car.car_name }}</h3>
+                    <p><strong>Car Number:</strong> {{ car.car_num }}</p>
+                    <p><strong>Company:</strong> {{ car.company }}</p>
+                    <p><strong>Type:</strong> {{ car.car_type }}</p>
+                    <p><strong>From:</strong> {{ car.from_place }}</p>
+                    <p><strong>To:</strong> {{ car.to_place }}</p>
+                    <p><strong>Available Seats:</strong> {{ car.available_seats }} / {{ car.total_seats }}</p>
+                    <p><strong>Price per Seat:</strong> ₹{{ car.price_per_seat }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Book Seats</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label>Number of Seats (Available: {{ car.available_seats }})</label>
+                            <input type="number" name="seats_required" min="1" max="{{ car.available_seats }}" 
+                                   class="form-control" required onchange="updateTotal(this.value)">
+                        </div>
+                        <div class="mb-3">
+                            <p>Price per seat: ₹{{ car.price_per_seat }}</p>
+                            <p>Total Price: ₹<span id="totalPrice">0</span></p>
+                        </div>
+                        <div class="mb-3">
+                            <label>Contact Number</label>
+                            <input type="text" name="contact" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Pickup Date</label>
+                            <input type="date" name="pickup" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Drop-off Date</label>
+                            <input type="date" name="dropoff" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Pickup Address</label>
+                            <textarea name="pick_add" class="form-control" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label>Drop-off Address</label>
+                            <textarea name="drop_add" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Book Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateTotal(seats) {
+    const pricePerSeat = {{ car.price_per_seat }};
+    document.getElementById('totalPrice').textContent = (seats * pricePerSeat).toFixed(2);
+}
+</script>
+{% endblock %}

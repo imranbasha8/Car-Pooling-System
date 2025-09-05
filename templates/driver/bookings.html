@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <!-- Pending Bookings Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h5>Pending Bookings</h5>
+        </div>
+        <div class="card-body">
+            {% for booking in context.pending_bookings %}
+                <div class="booking-item border-bottom p-3">
+                    <h6>{{ booking.car.car_name }} - {{ booking.name.fname }}</h6>
+                    <p>Seats: {{ booking.seats_booked }} | Total: ₹{{ booking.total_price }}</p>
+                    <div class="actions">
+                        <form method="POST" action="{% url 'manage_booking' booking.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="accept">
+                            <button class="btn btn-success btn-sm">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'manage_booking' booking.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject">
+                            <button class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No pending bookings</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Completed Bookings with Feedback -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5>Completed Rides & Feedback</h5>
+        </div>
+        <div class="card-body">
+            {% for booking in context.completed_bookings %}
+                <div class="booking-item border-bottom p-3">
+                    <h6>{{ booking.car.car_name }} - {{ booking.name.fname }}</h6>
+                    <p>Date: {{ booking.pickup }} to {{ booking.dropoff }}</p>
+                    {% if booking.feedback %}
+                        <div class="feedback-section bg-light p-3 mt-2">
+                            <h6>Feedback:</h6>
+                            <div class="rating">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= booking.rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="mt-2">{{ booking.feedback }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="text-center">No completed rides yet</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

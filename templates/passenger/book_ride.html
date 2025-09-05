@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h5>Book Ride</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Car Details:</h6>
+                    <p><strong>Car:</strong> {{ car.car_name }} ({{ car.company }})</p>
+                    <p><strong>From:</strong> {{ car.from_place }}</p>
+                    <p><strong>To:</strong> {{ car.to_place }}</p>
+                    <p><strong>Date:</strong> {{ car.date }}</p>
+                    <p><strong>Time:</strong> {{ car.time|time:"g:i A" }}</p>
+                    <p><strong>Available Seats:</strong> {{ car.available_seats }}/{{ car.total_seats }}</p>
+                    <p><strong>Price per Seat:</strong> ₹{{ car.price_per_seat }}</p>
+                </div>
+                <div class="col-md-6">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="seats_required" class="form-label">Number of Seats</label>
+                            <input type="number" class="form-control" id="seats_required" name="seats_required" 
+                                   min="1" max="{{ car.available_seats }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="contact" name="contact" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pick_add" class="form-label">Pickup Address</label>
+                            <textarea class="form-control" id="pick_add" name="pick_add" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="drop_add" class="form-label">Drop Address</label>
+                            <textarea class="form-control" id="drop_add" name="drop_add" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

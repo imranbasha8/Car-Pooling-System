@@ -39,9 +39,6 @@ Drivers can list their rides, and passengers can search, book, and share journey
 ## 📂 Project Setup
 
 1. **Clone the repository**  
-   ```bash
-   git clone https://github.com/imranbasha8/Car-Pooling-System.git
-   cd Car-Pooling-System 
 
 Create a virtual environment :
 python -m venv venv
